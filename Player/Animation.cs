@@ -1,27 +1,18 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class Animation : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private Animator _animator;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
-
-    private void Start()
+    public void RunMoveAnimation()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        float horizontalMove = Input.GetAxisRaw("Horizontal");
+
+        _animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
     }
 
-    private void Update()
+    public void RunAttackAnimation()
     {
-        var direction = (_target.position - transform.position).normalized;
-
-        _rigidbody.velocity = direction * _speed;
-    }
-
-    public void Init(Transform target)
-    {
-        _target = target;
+        _animator.SetTrigger("Attack");
     }
 }

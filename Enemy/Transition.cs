@@ -1,27 +1,22 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public abstract class Transition : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private State _targetState;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    protected Player Target { get; private set; }
 
-    private void Start()
+    public State TargetState => _targetState;
+
+    public bool NeedTransit { get; protected set; }
+
+    public void Init(Player target)
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        Target = target;
     }
 
-    private void Update()
+    private void OnEnable() 
     {
-        var direction = (_target.position - transform.position).normalized;
-
-        _rigidbody.velocity = direction * _speed;
-    }
-
-    public void Init(Transform target)
-    {
-        _target = target;
+        NeedTransit = false;
     }
 }

@@ -1,27 +1,45 @@
+using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class AttackState : State
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private int _damage;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private Animator _animator;
+    private Coroutine _coroutine;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _animator = GetComponent<Animator>();
+
+        if(_coroutine != null)
+            StopCoroutine(_coroutine);
+
+        _coroutine = StartCoroutine(Play());
     }
 
-    private void Update()
+    private void Assault(Player target)
     {
-        var direction = (_target.position - transform.position).normalized;
+        _animator.Play("Assault");
 
-        _rigidbody.velocity = direction * _speed;
+        target.ApplyDamage(_damage);
     }
 
-    public void Init(Transform target)
+    private IEnumerator Play()
     {
-        _target = target;
+        bool isWork = true;
+        
+        while (isWork)
+        {
+            Assault(Target);
+
+            if(Target == null)
+                isWork = false;
+
+            yield return null;
+        }
+
+        StopCoroutine(_coroutine);
     }
 }

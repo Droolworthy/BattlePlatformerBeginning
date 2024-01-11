@@ -1,27 +1,29 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class PlayerMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private float _direction;
 
-    private void Start()
+    public void MoveToRight()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        SetNextPosition(_direction);
     }
 
-    private void Update()
+    public void MoveToLeft()
     {
-        var direction = (_target.position - transform.position).normalized;
+        float coordinate = -1;
 
-        _rigidbody.velocity = direction * _speed;
+        _direction *= coordinate;
+
+        SetNextPosition(_direction);
     }
 
-    public void Init(Transform target)
+    private void SetNextPosition(float coordinate)
     {
-        _target = target;
+        _direction = _speed * Time.deltaTime;
+
+        transform.Translate(coordinate, 0, 0);
     }
 }

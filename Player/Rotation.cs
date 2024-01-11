@@ -16,13 +16,9 @@ public class Rotation : MonoBehaviour
         _inputHorizontal = Input.GetAxis("Horizontal");
 
         if (_inputHorizontal > 0)
-        {
             _spriteRenderer.flipX = false;
-        }
 
         if (_inputHorizontal < 0)
-        {
             _spriteRenderer.flipX = true;
-        }
     }
 }

@@ -1,27 +1,45 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public class WaypointMovement : State
 {
+    [SerializeField] private Transform _path;
     [SerializeField] private float _speed;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private SpriteRenderer _spriteRenderer;
+    private Transform[] _points;
+    private int _currentPoint;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        _points = new Transform[_path.childCount];
+
+        for (int i = 0; i < _path.childCount; i++)
+        {
+            _points[i] = _path.GetChild(i);
+        }
     }
 
     private void Update()
     {
-        var direction = (_target.position - transform.position).normalized;
+        Transform target = _points[_currentPoint];
 
-        _rigidbody.velocity = direction * _speed;
-    }
+        transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
 
-    public void Init(Transform target)
-    {
-        _target = target;
+        if (transform.position == target.position)
+        {
+            _spriteRenderer.flipX = false;
+
+            _currentPoint++;
+
+            if (_currentPoint >= _points.Length)
+            {
+                _currentPoint = 0;
+
+                _spriteRenderer.flipX = true;
+            }
+        }
     }
 }

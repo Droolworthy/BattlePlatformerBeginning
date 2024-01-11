@@ -1,27 +1,15 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class DistanceTransition : Transition
 {
-    [SerializeField] private float _speed;
-
-    private Transform _target;
-    private Rigidbody _rigidbody;
-
-    private void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody>();    
-    }
+    [SerializeField] private float _transitionRange;
 
     private void Update()
     {
-        var direction = (_target.position - transform.position).normalized;
+        if (Target == null)
+            NeedTransit = true;
 
-        _rigidbody.velocity = direction * _speed;
-    }
-
-    public void Init(Transform target)
-    {
-        _target = target;
+        if (Vector2.Distance(transform.position, Target.transform.position) < _transitionRange)
+            NeedTransit = true;
     }
 }

@@ -1,27 +1,34 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private int _health;
+    [SerializeField] private int _damage;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private int _currentHealth;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _currentHealth = _health;
     }
 
-    private void Update()
+    public void ApplyDamage(int damage)
     {
-        var direction = (_target.position - transform.position).normalized;
+        _currentHealth -= damage;
 
-        _rigidbody.velocity = direction * _speed;
+        if(_currentHealth <= 0)
+            Destroy(gameObject);
     }
 
-    public void Init(Transform target)
+    public void RestoreHealth(int health)
     {
-        _target = target;
+        if(_currentHealth > 0)
+            _currentHealth += health;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.TryGetComponent(out Enemy enemy))
+            enemy.TakeDamage(_damage);
     }
 }

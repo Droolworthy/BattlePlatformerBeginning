@@ -1,27 +1,16 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class MedicalKit : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private int _health;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
-
-    private void Start()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        _rigidbody = GetComponent<Rigidbody>();    
-    }
+        if(collision.TryGetComponent(out Player player))
+        {
+            player.RestoreHealth(_health);
 
-    private void Update()
-    {
-        var direction = (_target.position - transform.position).normalized;
-
-        _rigidbody.velocity = direction * _speed;
-    }
-
-    public void Init(Transform target)
-    {
-        _target = target;
+            Destroy(gameObject);
+        }
     }
 }

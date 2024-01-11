@@ -1,27 +1,29 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private int _health;
+    [SerializeField] private Player _target;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    public Player Target => _target;
+
+    private int _currentHealth;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _currentHealth = _health;
     }
 
-    private void Update()
-    {
-        var direction = (_target.position - transform.position).normalized;
-
-        _rigidbody.velocity = direction * _speed;
-    }
-
-    public void Init(Transform target)
+    public void Init(Player target)
     {
         _target = target;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        _currentHealth -= damage;
+
+        if (_currentHealth <= 0)
+            Destroy(gameObject);
     }
 }

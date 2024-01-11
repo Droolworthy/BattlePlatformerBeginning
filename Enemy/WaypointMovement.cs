@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class WaypointMovement : State
+public class WaypointMovementState : State
 {
     [SerializeField] private Transform _path;
     [SerializeField] private float _speed;

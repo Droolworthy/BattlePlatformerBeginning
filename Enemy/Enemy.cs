@@ -5,9 +5,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int _health;
     [SerializeField] private Player _target;
 
-    public Player Target => _target;
-
     private int _currentHealth;
+
+    public Player Target => _target;
 
     private void Start()
     {

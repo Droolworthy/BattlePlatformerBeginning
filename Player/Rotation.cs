@@ -1,27 +1,28 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public class Rotation : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private SpriteRenderer _spriteRenderer;
+    private float _inputHorizontal;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    public void TurnTowardsWalking()
     {
-        var direction = (_target.position - transform.position).normalized;
+        _inputHorizontal = Input.GetAxis("Horizontal");
 
-        _rigidbody.velocity = direction * _speed;
-    }
+        if (_inputHorizontal > 0)
+        {
+            _spriteRenderer.flipX = false;
+        }
 
-    public void Init(Transform target)
-    {
-        _target = target;
+        if (_inputHorizontal < 0)
+        {
+            _spriteRenderer.flipX = true;
+        }
     }
 }

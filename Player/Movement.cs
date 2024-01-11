@@ -1,27 +1,36 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(PlayerMover))]
+[RequireComponent(typeof(Animation))]
+[RequireComponent(typeof(Rotation))]
+public class Movement : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private PlayerMover _mover;
+    private Animation _animation;
+    private Rotation _rotation;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _mover = GetComponent<PlayerMover>();
+        _animation = GetComponent<Animation>();
+        _rotation = GetComponent<Rotation>();
     }
 
     private void Update()
     {
-        var direction = (_target.position - transform.position).normalized;
+        int button = 0;
 
-        _rigidbody.velocity = direction * _speed;
-    }
+        if (Input.GetMouseButtonDown(button))
+            _animation.RunAttackAnimation();
 
-    public void Init(Transform target)
-    {
-        _target = target;
+        if (Input.GetKey(KeyCode.D))
+            _mover.MoveToRight();
+
+        if (Input.GetKey(KeyCode.A))
+            _mover.MoveToLeft();
+
+        _animation.RunMoveAnimation();
+
+        _rotation.TurnTowardsWalking();
     }
 }

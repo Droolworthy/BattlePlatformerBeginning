@@ -8,8 +8,6 @@ public class EnemyStateMachine : MonoBehaviour
     private Player _target;
     private State _currentState;
 
-    public State Current => _currentState;
-
     private void Start()
     {
         _target = GetComponent<Enemy>().Target;
@@ -19,7 +17,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Update()
     {
-        if (_currentState == null)
+        if(_currentState == null)
             return;
 
         var nextState = _currentState.GetNextCondition();
@@ -32,13 +30,13 @@ public class EnemyStateMachine : MonoBehaviour
     {
         _currentState = startState;
 
-        if (_currentState != null)
+        if(_currentState != null)
             _currentState.Enter(_target);
     }
 
     private void Transit(State nextState)
     {
-        if (_currentState != null)
+        if(_currentState != null)
             _currentState.Exit();
 
         _currentState = nextState;

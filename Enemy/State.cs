@@ -1,27 +1,48 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+public class State : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private List<Transition> _transitions;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    protected Player Target { get; private set; }
 
-    private void Start()
+    public void Enter(Player target)
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        if(enabled == false)
+        {
+            Target = target;
+
+            enabled = true;
+
+            foreach(var transition in _transitions)   
+            {                                         
+                transition.enabled = true;  
+                
+                transition.Init(Target);               
+            }
+        }
     }
 
-    private void Update()
+    public void Exit()
     {
-        var direction = (_target.position - transform.position).normalized;
+        if(enabled == true)
+        {
+            foreach(var transition in _transitions)
+                transition.enabled = false;
 
-        _rigidbody.velocity = direction * _speed;
+            enabled = false;
+        }
     }
 
-    public void Init(Transform target)
+    public State GetNextCondition()
     {
-        _target = target;
+        foreach(var transition in _transitions)
+        {
+            if (transition.NeedTransit)
+                return transition.TargetState;
+        }
+
+        return null;
     }
 }

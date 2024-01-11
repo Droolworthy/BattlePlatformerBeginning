@@ -1,27 +1,49 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(Enemy))]
+public class EnemyStateMachine : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private State _firstState;
 
-    private Transform _target;
-    private Rigidbody _rigidbody;
+    private Player _target;
+    private State _currentState;
+
+    public State Current => _currentState;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();    
+        _target = GetComponent<Enemy>().Target;
+
+        Reset(_firstState);
     }
 
     private void Update()
     {
-        var direction = (_target.position - transform.position).normalized;
+        if (_currentState == null)
+            return;
 
-        _rigidbody.velocity = direction * _speed;
+        var nextState = _currentState.GetNextCondition();
+
+        if(nextState != null)
+            Transit(nextState);
     }
 
-    public void Init(Transform target)
+    private void Reset(State startState)
     {
-        _target = target;
+        _currentState = startState;
+
+        if (_currentState != null)
+            _currentState.Enter(_target);
     }
+
+    private void Transit(State nextState)
+    {
+        if (_currentState != null)
+            _currentState.Exit();
+
+        _currentState = nextState;
+
+        if(_currentState != null)
+            _currentState.Enter(_target);
+    }     
 }
